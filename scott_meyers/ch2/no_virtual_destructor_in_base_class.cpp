@@ -69,3 +69,32 @@ public:
 
 private:
     static size_t numTargets;
+
+
+private:
+static size_t numTanks;
+};
+size_t EnemyTank::numTanks = 0;
+
+int main()
+{
+EnemyTarget *targetPtr = new EnemyTank;
+std::cout << "Number of targets: " << EnemyTarget::numberOfTargets() << std::endl;
+std::cout << "Number of tanks: " << EnemyTank::numberOfTanks() << std::endl;
+
+Copy code
+delete targetPtr;
+std::cout << "Number of targets after delete: " << EnemyTarget::numberOfTargets() << std::endl;
+std::cout << "Number of tanks after delete: " << EnemyTank::numberOfTanks() << std::endl;
+
+return 0;
+}
+
+Now when this code is run, the output will be:
+
+Number of targets: 1
+Number of tanks: 1
+Number of targets after delete: 0
+Number of tanks after delete: 0
+
+This is because the virtual destructor in the base class ensures that the derived class destructor is also called when the object is deleted through a base class pointer. This helps to properly destroy the object and avoid any memory leaks or other issues.
