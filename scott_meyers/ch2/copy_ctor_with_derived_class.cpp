@@ -88,3 +88,15 @@ return 0;
 In this code, the Derived class has a copy constructor that omits the call to the base class copy constructor. When creating a copy of a Derived object, this can lead to undefined behavior, because the base class portion of the object is not properly initialized. In this case, calling d2.getX() could potentially result in any value being printed, or it could cause a runtime error.
 
 To avoid such issues, it is important to always call the copy constructor for the base class when defining a copy constructor for a derived class. This ensures that the base class portion of the derived class object is properly initialized.
+
+
+class Derived: public Base {
+public:
+Derived(int initialV alue)
+: Base (initialV alue), y(initialV alue) {}
+Derived(const Derived& rhs) : Base(rhs), y(rhs.y) {} // corrected copy constructor
+private:
+int y;
+};
+
+The copy constructor for the Derived class should also call the copy constructor for the base class using the Base(rhs) syntax, instead of trying to access the x member directly. This is necessary to properly initialize the base class portion of the derived class object.
