@@ -1,0 +1,195 @@
+A team of analysts at Amazon needs to analyze the stock prices of Amazon over a period of several months.
+
+A group of consecutively chosen months is said to be maximum profitable
+if the price in its first or last month is the maximum for the group.
+More formally, a group of consecutive months [l, r] (1 ≤ l ≤ r ≤ n) is said to be maximum profitable if either:
+
+stockPrice[l] = max(stockPrice[l], stockPrice[l + 1], ..., stockPrice[r]) 
+stockPrice[r] = max(stockPrice[l], stockPrice[l + 1], ..., stockPrice[r])  
+Given prices over n consecutive months, find the number of maximum profitable groups which can be formed.
+Note that the months chosen must be consecutive, i.e., you must choose a subarray of the given array.
+
+Example:
+Consider there are n = 3 months of data, stockPrice = [2, 3, 2]
+There will be 5 profitable months:
+[[2], [2, 3], [3], [3, 2], [2]]
+
+def solution(v: List[int]) -> int:
+    stack = []
+    n, r = len(v), 0
+    e = [0] * n
+    for i in range(0, n):
+        while len(stack) and v[stack[-1]] < v[i]:
+            # [top..i - 1] is what we want. Note it may contain equal elements.
+            r += i - stack.pop()
+        if len(stack):
+            e[i] = i - stack[-1] if v[stack[-1]] > v[i] else i - stack[-1] + e[stack[-1]] - 1
+        else:
+            e[i] = i + 1
+        r += e[i]
+        stack.append(i)
+    while len(stack):
+        # [top..n - 1] is what we want
+        r += n - stack.pop()
+    return r - n
+
+print(solution([1, 1, 1, 1]))
+print(solution([2, 3, 2]))
+print(solution([5, 3, 1, 3, 5]))
+print(solution([1, 4, 1, 2, 4, 5, 2, 3, 5,  7, 6, 7, 3, 2, 7, 1, 5, 4, 5, 1, 2, 5, 3, 5]))
+
+
+
+public class Solution {
+    public boolean canPlaceFlowers(int[] flowerbed, int n) {
+        int count = 0;
+        for(int i = 0; i < flowerbed.length && count < n; i++) {
+            if(flowerbed[i] == 0) {
+	     //get next and prev flower bed slot values. If i lies at the ends the next and prev are considered as 0. 
+               int next = (i == flowerbed.length - 1) ? 0 : flowerbed[i + 1]; 
+               int prev = (i == 0) ? 0 : flowerbed[i - 1];
+               if(next == 0 && prev == 0) {
+                   flowerbed[i] = 1;
+                   count++;
+               }
+            }
+        }
+        
+        return count == n;
+    }
+}
+
+
+Given a set of numbers
+Find Maximum size of a perfect set
+A perfect set of size n satifies the condition perfect[i+1]=perfect[i]*perfect[i]
+where 1<=i<=n and n<=10^5
+Perfect set should have atleast 2 numbers
+[625,2,4,5,25] has 2 perfect sets [2,4] and [5,25,625]
+Answer will be 3 in this case.
+
+Solution: UnionFind(use HashMap) or by using Sorting/Sets
+
+Q2
+Given a set of variables on items in a store, find the minimum cost to grab m items from the store.
+The quanity of each item is infinite and
+Cost of an item is given by the formula cost[i] = a[i] + (j-1)*b[i];
+1<=j<=n where j is the cnt of that distinct item.
+NOTE : Here cost changes if same item is picked up again.
+
+a is a list of size n
+b is a list of size n
+m is a number with bound till 10^5
+
+Solution: Use PriorityQueue (Greedy)
+
+
+
+int solution(const string &s) {
+    const int n = s.length();
+    int r = 0;
+    for (int i = n - 1, j = 0; i >= 0 && j < n; ++j) {
+        if (s[i] == s[j]) {
+            --i;
+            ++r;
+        }
+    }
+    return n - r;
+}
+int main() {
+    cout << solution("00110101") << endl;
+    cout << solution("101011") << endl;
+    return 0;
+}
+
+
+
+string findEncryptedPassword(string password) {
+    vector<int> charCount(26, 0);
+
+    
+    for (char c : password) {
+        charCount[c - 'a']++;
+    }
+
+    string firstHalf;
+    char oddChar = '\0';
+
+    for (int i = 0; i < 26; ++i) {
+        if (charCount[i] % 2 == 1) {
+            if (oddChar == '\0') {
+                oddChar = 'a' + i;
+            }
+            charCount[i]--;
+        }
+
+        char currentChar = 'a' + i;
+        firstHalf += string(charCount[i] / 2, currentChar);
+    }
+
+    string secondHalf = firstHalf;
+    if (oddChar != '\0') {
+        firstHalf += oddChar;
+    }
+
+    reverse(secondHalf.begin(), secondHalf.end());
+    return firstHalf + secondHalf;
+}
+
+
+SinglyLinkedListNode* getShoppingCart(SinglyLinkedListNode* head, vector<vector<string>> queries) {
+    for (const auto& query : queries) {
+        string action = query[0];
+
+        if (action == "PUSH_HEAD") {
+            string itemName = query[1];
+            SinglyLinkedListNode* newNode = new SinglyLinkedListNode(itemName);
+            newNode->next = head;
+            head = newNode;
+        } else if (action == "PUSH_TAIL") {
+            string itemName = query[1];
+            SinglyLinkedListNode* newNode = new SinglyLinkedListNode(itemName);
+
+            if (!head) {
+                head = newNode;
+            } else {
+                SinglyLinkedListNode* current = head;
+                while (current->next) {
+                    current = current->next;
+                }
+                current->next = newNode;
+            }
+        } else if (action == "POP_HEAD" && head) {
+            SinglyLinkedListNode* temp = head;
+            head = head->next;
+            delete temp;
+        }
+    }
+
+    return head;
+}
+
+
+
+def work(queries):
+    ans = []
+    res = 0
+    siz = defaultdict(int)
+    ids = defaultdict(int)
+    for q in queries:
+        x = abs(q)
+        if q > 0:
+            siz[ids[x]] -= 1
+            ids[x] += 1
+            siz[ids[x]] += 1
+            res = max(res, ids[x])
+        else:
+            siz[ids[x]] -= 1
+            ids[x] -= 1
+            siz[ids[x]] += 1
+            if siz[res] == 0:
+                res -= 1
+        ans.append(res)
+    return ans
+
+
